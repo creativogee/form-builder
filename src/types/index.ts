@@ -13,7 +13,7 @@ export type CheckedProp = {
 export type ConfigProp = {
   id: number;
   attr: string;
-  type: 'text' | 'checkbox';
+  type: 'text' | 'checkbox' | 'number';
   value?: string;
   checked?: boolean;
   info?: string;

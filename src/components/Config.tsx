@@ -4,7 +4,9 @@ import {
   configInfo,
   configLabel,
   configPlaceholder,
+  configQuestion,
   configRequired,
+  configScale,
   configureAlign,
   configureTitle,
   configureUnderline,
@@ -24,6 +26,12 @@ type Prop = {
   handleCheckedChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   title?: string;
   handleTitleChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  question?: string;
+  handleQuestionChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  minimum?: string;
+  handleMinimumChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  maximum?: string;
+  handleMaximumChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 const Config: React.FC<Prop> = ({
   options,
@@ -39,6 +47,12 @@ const Config: React.FC<Prop> = ({
   handleCheckedChange,
   title,
   handleTitleChange,
+  question,
+  handleQuestionChange,
+  minimum,
+  handleMinimumChange,
+  maximum,
+  handleMaximumChange,
 }) => {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -117,6 +131,30 @@ const Config: React.FC<Prop> = ({
               type: 'checkbox',
               checked: checked?.[attr.split(' ')[0] as keyof typeof checked] === attr.split(' ')[1],
               onChange: handleCheckedChange,
+            });
+          case 'Question':
+            return configQuestion({
+              id: idx,
+              attr,
+              type: 'text',
+              value: question,
+              onChange: handleQuestionChange,
+            });
+          case 'Minimum':
+            return configScale({
+              id: idx,
+              type: 'number',
+              attr,
+              value: `${minimum}`,
+              onChange: handleMinimumChange,
+            });
+          case 'Maximum':
+            return configScale({
+              id: idx,
+              type: 'number',
+              attr,
+              value: `${maximum}`,
+              onChange: handleMaximumChange,
             });
           default:
             break;

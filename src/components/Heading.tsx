@@ -36,7 +36,7 @@ const Heading: React.FC<FieldProp> = ({ id, callback: removeField }) => {
       <div className='relative'>
         <h1
           className={classNames(
-            'text-black text-2xl font-bold border border-dashed h-12 leading-[2.8rem]',
+            'text-black text-2xl font-bold h-12 leading-[2.8rem]',
             checked.Underline ? 'underline' : '',
             checked.Align === 'Right' ? 'text-right' : '',
             checked.Align === 'Center' ? 'text-center' : ''
@@ -47,7 +47,7 @@ const Heading: React.FC<FieldProp> = ({ id, callback: removeField }) => {
         <div className='absolute top-0 -right-4 flex flex-col h-full gap-y-2 group'>
           <button
             onClick={openConfig}
-            className='h-5 w-5 border bg-slate-200 shadow-md invisible group-hover:visible'
+            className='h-5 w-5 border bg-slate-200 shadow-md'
           >
             {open ? (
               <ChevronUpIcon className='h-5 w-5 text-gray-700' />

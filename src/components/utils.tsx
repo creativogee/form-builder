@@ -41,6 +41,8 @@ export const configInfo = ({ id, attr, type, value, onChange }: ConfigProp) => (
   </div>
 );
 
+export const configQuestion =  configInfo
+
 export const configureUnderline = ({ id, attr, type, checked, onChange }: ConfigProp) => (
   <div key={`${id}`} className='col-span-1 flex gap-x-3'>
     <label className='text-black'>{attr}:</label>
@@ -75,6 +77,19 @@ export const configureAlign = ({ id, attr, type, checked, onChange }: ConfigProp
       checked={checked}
       onChange={onChange}
       className='p-1 pb-0 border-b outline-none'
+    />
+  </div>
+);
+
+export const configScale = ({ id, attr, type, value, onChange }: ConfigProp) => (
+  <div key={`${id}`} className='col-span-1 flex gap-2 items-end'>
+    <label className='text-black'>{attr}:</label>
+    <input
+      type={type}
+      value={value}
+      placeholder='-'
+      onChange={onChange}
+      className='p-1 pb-0 border-b outline-none w-full'
     />
   </div>
 );

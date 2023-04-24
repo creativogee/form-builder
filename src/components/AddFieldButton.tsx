@@ -8,7 +8,7 @@ type Prop = {
 };
 
 const AddFieldButton: React.FC<Prop> = ({ callback }) => {
-  const fieldOptions = ['Heading', 'Text-input', 'Text-area'];
+  const fieldOptions = ['Heading', 'Text input', 'Text area', 'Scale'];
 
   return (
     <Menu as='div' className='relative inline-block text-left'>
