@@ -1,34 +1,21 @@
 import { ChevronDownIcon, ChevronUpIcon, XMarkIcon } from '@heroicons/react/24/solid';
 import { useState } from 'react';
-import { CheckedProp, FieldProp } from '../types';
 import Config from './Config';
 import { classNames } from '../helpers';
+import { useAtom } from 'jotai';
+import { formAtom, removeFieldAtom } from '../state/atoms';
 
-const Heading: React.FC<FieldProp> = ({ id, callback: removeField }) => {
-  const [title, setTitle] = useState('');
+const Heading: React.FC<{id: string}> = ({ id }) => {
   const [open, setOpen] = useState<boolean>(false);
-  const [checked, setChecked] = useState<CheckedProp>({
-    Underline: true,
-    Align: 'Left'
-  });
+  const [form] = useAtom(formAtom);
+  const [, removeField] = useAtom(removeFieldAtom)
+
   const configOptions = ['Title', 'Underline', 'Align Left', 'Align Center', 'Align Right'];
+  const { align, underline, title} = form[id]
 
   const openConfig = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setOpen(!open);
-  };
-
-  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTitle(e.target.value);
-  };
-
-  const handleCheckedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value, checked } = e.target;
-    if (value.includes('Align')) {
-      const [key, val] = value.split(' ')
-      setChecked((oldChecked) => ({ ...oldChecked, [key]: val }));
-    }
-    setChecked((oldChecked) => ({ ...oldChecked, [value]: checked }));
   };
 
   return (
@@ -37,9 +24,9 @@ const Heading: React.FC<FieldProp> = ({ id, callback: removeField }) => {
         <h1
           className={classNames(
             'text-black text-2xl font-bold h-12 leading-[2.8rem]',
-            checked.Underline ? 'underline' : '',
-            checked.Align === 'Right' ? 'text-right' : '',
-            checked.Align === 'Center' ? 'text-center' : ''
+            underline ? 'underline' : '',
+            align === 'right' ? 'text-right' : '',
+            align === 'center' ? 'text-center' : ''
           )}
         >
           {title}
@@ -63,15 +50,7 @@ const Heading: React.FC<FieldProp> = ({ id, callback: removeField }) => {
           </button>
         </div>
       </div>
-      <Config
-        options={configOptions}
-        open={open}
-        setOpen={setOpen}
-        title={title}
-        handleTitleChange={handleTitleChange}
-        checked={checked}
-        handleCheckedChange={handleCheckedChange}
-      />
+      <Config id={id} options={configOptions} open={open} setOpen={setOpen} />
     </div>
   );
 };

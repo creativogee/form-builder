@@ -1,21 +1,15 @@
-export type FieldProp = {
+export type Field = {
   id: string
-  type?: string;
-  callback: (key: string) => void;
-};
-
-export type CheckedProp = {
-  Required?: boolean;
-  Underline?: boolean;
-  Align?: 'Left' | 'Right' | 'Center',
+  elem: string // TODO string type e.g text-area
+  type?: 'text' | 'checkbox' | 'number';
+  label?: string
+  required?: boolean
+  placeholder?: string
+  info?: string
+  question?: string
+  underline?: boolean
+  title?: string
+  align?: 'left' | 'right' | 'center'
+  minimum?: number
+  maximum?: number
 }
-
-export type ConfigProp = {
-  id: number;
-  attr: string;
-  type: 'text' | 'checkbox' | 'number';
-  value?: string;
-  checked?: boolean;
-  info?: string;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-};

@@ -1,66 +1,24 @@
-import { nanoid } from 'nanoid';
-import { useState } from 'react';
 import AddFieldButton from './components/AddFieldButton';
-import Input from './components/TextInput';
+import Input from './components/Input';
 import TextArea from './components/TextArea';
 import Heading from './components/Heading';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 import LikertScale from './components/Scale';
+import { useAtom } from 'jotai';
+import { formAtom, orderFieldAtom } from './state/atoms';
 
-type FormFieldProps = {
-  key: string;
-  elem: 'input' | 'text-area' | 'heading' | 'scale';
-  type?: 'text' | 'email' | 'password' | 'number';
-  name?: string;
-  placeholder?: string;
-  info?: string;
-};
 
 function App() {
-  const [fields, setFields] = useState<FormFieldProps[]>([]);
-
-  console.log(fields)
-
-  const addField = (option: string) => {
-    switch (option.toLowerCase()) {
-      case 'text input':
-        setFields((oldFields) => [...oldFields, { key: nanoid(), elem: 'input', type: 'text' }]);
-        break;
-      case 'text area':
-        setFields((oldFields) => [...oldFields, { key: nanoid(), elem: 'text-area' }]);
-        break;
-      case 'heading':
-        setFields((oldFields) => [...oldFields, { key: nanoid(), elem: 'heading' }]);
-        break;
-      case 'scale':
-        setFields((oldFields) => [...oldFields, { key: nanoid(), elem: 'scale' }]);
-        break;
-      default:
-        break;
-    }
-  };
-
-  const removeField = (key: string) => {
-    const filteredFields = fields.filter((field) => field.key !== key);
-    setFields(filteredFields);
-  };
+  const [form] = useAtom(formAtom);
+  const [, orderField] = useAtom(orderFieldAtom)
+  const fields = Object.keys(form);
 
   const onDragEnd = (result: DropResult) => {
     const { source, destination } = result;
-    if (!destination) {
-      return;
-    }
+    if (!destination)  return;
+    if (destination.index === source.index) return;
 
-    if (destination.index === source.index) {
-      return;
-    }
-
-    setFields((prevState) => {
-      const newState = [...prevState];
-      const [removed] = newState.splice(source.index, 1);
-      newState.splice(destination.index, 0, removed);
-      return newState;
-    });
+    orderField({source, destination})
   };
 
   return (
@@ -69,7 +27,7 @@ function App() {
         <div className='flex'>
           <div className='flex-1'></div>
           <div className='shadow-lg mb-10'>
-            <AddFieldButton callback={addField} />
+            <AddFieldButton />
           </div>
         </div>
         <form>
@@ -77,61 +35,59 @@ function App() {
             <Droppable droppableId='form-fields'>
               {(provided) => (
                 <div {...provided.droppableProps} ref={provided.innerRef}>
-                  {fields.length > 0 ? (
-                    <div className='flex flex-col gap-3'>
-                      {fields.map((field, index) =>
-                        field.elem === 'input' ? (
-                          <Draggable key={field.key} draggableId={field.key} index={index}>
-                            {(provided) => (
-                              <div
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                              >
-                                <Input id={field.key} type={field.type} callback={removeField} />
-                              </div>
-                            )}
-                          </Draggable>
-                        ) : field.elem === 'text-area' ? (
-                          <Draggable key={field.key} draggableId={field.key} index={index}>
-                            {(provided) => (
-                              <div
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                                ref={provided.innerRef}
-                              >
-                                <TextArea id={field.key} callback={removeField} />
-                              </div>
-                            )}
-                          </Draggable>
-                        ) : field.elem === 'heading' ? (
-                          <Draggable key={field.key} draggableId={field.key} index={index}>
-                            {(provided) => (
-                              <div
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                                ref={provided.innerRef}
-                              >
-                                <Heading id={field.key} callback={removeField} />
-                              </div>
-                            )}
-                          </Draggable>
-                        ) : field.elem === 'scale' ? (
-                          <Draggable key={field.key} draggableId={field.key} index={index}>
-                            {(provided) => (
-                              <div
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                                ref={provided.innerRef}
-                              >
-                                <LikertScale id={field.key} callback={removeField} />
-                              </div>
-                            )}
-                          </Draggable>
-                        ) : null,
-                      )}
-                    </div>
-                  ) : null}
+                  <div className='flex flex-col gap-3'>
+                    {fields.map((key, index) =>
+                      form[key].elem === 'text input' ? (
+                        <Draggable key={key} draggableId={key} index={index}>
+                          {(provided) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                            >
+                              <Input id={key} />
+                            </div>
+                          )}
+                        </Draggable>
+                      ) : form[key].elem === 'text area' ? (
+                        <Draggable key={key} draggableId={key} index={index}>
+                          {(provided) => (
+                            <div
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              ref={provided.innerRef}
+                            >
+                              <TextArea id={key} />
+                            </div>
+                          )}
+                        </Draggable>
+                      ) : form[key].elem === 'heading' ? (
+                        <Draggable key={key} draggableId={key} index={index}>
+                          {(provided) => (
+                            <div
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              ref={provided.innerRef}
+                            >
+                              <Heading id={key} />
+                            </div>
+                          )}
+                        </Draggable>
+                      ) : form[key].elem === 'scale' ? (
+                        <Draggable key={key} draggableId={key} index={index}>
+                          {(provided) => (
+                            <div
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              ref={provided.innerRef}
+                            >
+                              <LikertScale id={key} />
+                            </div>
+                          )}
+                        </Draggable>
+                      ) : null,
+                    )}
+                  </div>
                   {provided.placeholder}
                 </div>
               )}

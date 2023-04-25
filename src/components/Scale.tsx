@@ -5,45 +5,26 @@ import {
   XMarkIcon,
 } from '@heroicons/react/24/solid';
 import { useState } from 'react';
-import { CheckedProp, FieldProp } from '../types';
 import { requiredTag } from './utils';
 import Config from './Config';
+import { formAtom, removeFieldAtom } from '../state/atoms';
+import { useAtom } from 'jotai';
 
-const LikertScale: React.FC<FieldProp> = ({ id, callback: removeField }) => {
-  const [question, setQuestion] = useState('');
-  const [info, setInfo] = useState('');
+const LikertScale: React.FC<{id: string}> = ({ id }) => {
   const [open, setOpen] = useState<boolean>(false);
-  const [minimum, setMinimum] = useState<string>('')
-  const [maximum, setMaximum] = useState<string>('')
-  const [checked, setChecked] = useState<CheckedProp>({
-    Required: false,
-  });
-  const configOptions = ['Question', 'Info', 'Required', 'Minimum', 'Maximum'];
-  const handleQuestionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setQuestion(e.target.value);
-  };
+  const [form] = useAtom(formAtom);
+  const [, removeField] = useAtom(removeFieldAtom)
 
-  const handleInfoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInfo(e.target.value);
-  };
-
-  const handleMinimumChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setMinimum(e.target.value);
-  };
-
-  const handleMaximumChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setMaximum(e.target.value);
-  };
+  const handleInput = (event: React.FormEvent<HTMLInputElement>) => {
+    event.currentTarget.value = event.currentTarget.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+  }
 
   const openConfig = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setOpen(!open);
   };
-
-  const handleCheckedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value, checked } = e.target;
-    setChecked((oldChecked) => ({ ...oldChecked, [value]: checked }));
-  };
+  const configOptions = ['question', 'info', 'required', 'minimum', 'maximum'];
+  const {required, info, question, minimum, maximum} = form[id]
 
   return (
     <div className='text-neutral-500'>
@@ -53,12 +34,13 @@ const LikertScale: React.FC<FieldProp> = ({ id, callback: removeField }) => {
             <div className='w-full h-10 border-b'>
               {question && (
                 <p className='text-black'>
-                  {question}?{checked.Required && requiredTag()}:
+                  {question}?{required && requiredTag()}:
                 </p>
               )}
             </div>
             <input
               type='number'
+              onInput={handleInput}
               className='border-gray-300 text-center focus:border-blue-500 block h-10 w-24 border p-3 shadow-sm focus:outline-0 focus:ring-0 disabled:opacity-50'
               placeholder='-'
               min={!minimum ? 0 : minimum}
@@ -91,21 +73,7 @@ const LikertScale: React.FC<FieldProp> = ({ id, callback: removeField }) => {
           </div>
         )}
       </div>
-      <Config
-        options={configOptions}
-        open={open}
-        setOpen={setOpen}
-        info={info}
-        handleInfoChange={handleInfoChange}
-        checked={checked}
-        handleCheckedChange={handleCheckedChange}
-        question={question}
-        handleQuestionChange={handleQuestionChange}
-        minimum={minimum}
-        handleMinimumChange={handleMinimumChange}
-        maximum={maximum}
-        handleMaximumChange={handleMaximumChange}
-      />
+      <Config id={id} options={configOptions} open={open} setOpen={setOpen} />
     </div>
   );
 };

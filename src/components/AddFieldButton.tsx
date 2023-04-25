@@ -1,14 +1,39 @@
 import { Fragment } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import { PlusIcon } from '@heroicons/react/20/solid';
-import { classNames } from '../helpers';
+import { classNames, getType } from '../helpers';
+import { useAtom } from 'jotai';
+import { formAtom } from '../state/atoms';
+import { nanoid } from 'nanoid';
+import { Field } from '../types';
 
-type Prop = {
-  callback: (option: string) => void;
-};
-
-const AddFieldButton: React.FC<Prop> = ({ callback }) => {
+const AddFieldButton: React.FC = () => {
   const fieldOptions = ['Heading', 'Text input', 'Text area', 'Scale'];
+  const [, setForm] = useAtom(formAtom);
+
+  const handleAdd = (option: string) => {
+    const id = nanoid();
+    const elem = option.toLowerCase();
+
+    setForm((oldForm) => ({
+      ...oldForm,
+      [id]: {
+        id,
+        elem,
+        type: getType(elem),
+        label: '',
+        placeholder: '',
+        required: false,
+        align: 'left',
+        info: '',
+        question: '',
+        title: '',
+        underline: true,
+        minimum: 0,
+        maximum: 0
+      } as Field,
+    }));
+  };
 
   return (
     <Menu as='div' className='relative inline-block text-left'>
@@ -39,7 +64,7 @@ const AddFieldButton: React.FC<Prop> = ({ callback }) => {
                       active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
                       'block px-4 py-2 text-sm',
                     )}
-                    onClick={() => callback(opt)}
+                    onClick={() => handleAdd(opt)}
                   >
                     {opt}
                   </a>

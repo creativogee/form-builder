@@ -5,40 +5,22 @@ import {
   XMarkIcon,
 } from '@heroicons/react/24/solid';
 import { useState } from 'react';
-import { CheckedProp, FieldProp } from '../types';
 import { requiredTag } from './utils';
 import Config from './Config';
+import { useAtom } from 'jotai';
+import { formAtom, removeFieldAtom } from '../state/atoms';
 
-const Input: React.FC<FieldProp> = ({ id, type, callback: removeField }) => {
-  const [label, setLabel] = useState('');
-  const [placeholder, setPlaceholder] = useState('');
-  const [info, setInfo] = useState('');
+const Input: React.FC<{id: string}> = ({ id }) => {
   const [open, setOpen] = useState<boolean>(false);
-  const [checked, setChecked] = useState<CheckedProp>({
-    Required: false,
-  });
-  const configOptions = ['Label', 'Placeholder', 'Info', 'Required'];
+  const [form] = useAtom(formAtom);
+  const [, removeField] = useAtom(removeFieldAtom)
 
-  const handleLabelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setLabel(e.target.value);
-  };
-
-  const handlePlaceholderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPlaceholder(e.target.value);
-  };
-
-  const handleInfoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInfo(e.target.value);
-  };
+  const configOptions = ['label', 'placeholder', 'info', 'required'];
+  const {label, required, placeholder, info, type} = form[id]
 
   const openConfig = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setOpen(!open);
-  };
-
-  const handleCheckedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value, checked } = e.target;
-    setChecked((oldChecked) => ({ ...oldChecked, [value]: checked }));
   };
 
   return (
@@ -47,7 +29,7 @@ const Input: React.FC<FieldProp> = ({ id, type, callback: removeField }) => {
         {label && (
           <label className='text-black font-semibold'>
             {label}
-            {checked.Required && requiredTag()}:
+            {required && requiredTag()}:
           </label>
         )}
         <div className='relative'>
@@ -82,19 +64,7 @@ const Input: React.FC<FieldProp> = ({ id, type, callback: removeField }) => {
           </div>
         )}
       </div>
-      <Config
-        options={configOptions}
-        open={open}
-        setOpen={setOpen}
-        label={label}
-        handleLabelChange={handleLabelChange}
-        placeholder={placeholder}
-        handlePlaceholderChange={handlePlaceholderChange}
-        info={info}
-        handleInfoChange={handleInfoChange}
-        checked={checked}
-        handleCheckedChange={handleCheckedChange}
-      />
+      <Config id={id} options={configOptions} open={open} setOpen={setOpen} />
     </div>
   );
 };
