@@ -24,7 +24,7 @@ const TextArea: React.FC<{id: string}> = ({ id }) => {
   };
 
   return (
-    <div className='text-neutral-500'>
+    <>
       <div className='flex flex-col gap-y-2'>
         {label && (
           <label className='text-black font-semibold'>
@@ -64,7 +64,7 @@ const TextArea: React.FC<{id: string}> = ({ id }) => {
         )}
       </div>
       <Config id={id} options={configOptions} open={open} setOpen={setOpen} />
-    </div>
+    </>
   );
 };
 

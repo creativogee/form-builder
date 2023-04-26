@@ -3,7 +3,7 @@ import Input from './components/Input';
 import TextArea from './components/TextArea';
 import Heading from './components/Heading';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
-import LikertScale from './components/Scale';
+import Scale from './components/Scale';
 import { useAtom } from 'jotai';
 import { formAtom, orderFieldAtom } from './state/atoms';
 
@@ -22,7 +22,7 @@ function App() {
   };
 
   return (
-    <div className='bg-neutral-200'>
+    <div className='bg-neutral-200 text-neutral-500'>
       <div className='max-w-3xl mx-auto border p-10 h-screen bg-white'>
         <div className='flex'>
           <div className='flex-1'></div>
@@ -81,7 +81,7 @@ function App() {
                               {...provided.dragHandleProps}
                               ref={provided.innerRef}
                             >
-                              <LikertScale id={key} />
+                              <Scale id={key} />
                             </div>
                           )}
                         </Draggable>

@@ -21,7 +21,7 @@ export const Checkbox: React.FC<Prop> = ({ fieldId: id, name }) => {
   }
 
   return (
-    <div key={id} className='col-span-1 flex gap-x-3'>
+    <div className='flex gap-x-3'>
       <label className='text-black'>{capitalize(name)}:</label>
       <input
         type='checkbox'

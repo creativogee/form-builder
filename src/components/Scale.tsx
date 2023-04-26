@@ -15,10 +15,6 @@ const LikertScale: React.FC<{id: string}> = ({ id }) => {
   const [form] = useAtom(formAtom);
   const [, removeField] = useAtom(removeFieldAtom)
 
-  const handleInput = (event: React.FormEvent<HTMLInputElement>) => {
-    event.currentTarget.value = event.currentTarget.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
-  }
-
   const openConfig = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setOpen(!open);
@@ -27,7 +23,7 @@ const LikertScale: React.FC<{id: string}> = ({ id }) => {
   const {required, info, question, minimum, maximum} = form[id]
 
   return (
-    <div className='text-neutral-500'>
+    <>
       <div className='flex flex-col gap-y-2 pt-5'>
         <div className='relative'>
           <div className='flex gap-x-5 items-center'>
@@ -40,7 +36,6 @@ const LikertScale: React.FC<{id: string}> = ({ id }) => {
             </div>
             <input
               type='number'
-              onInput={handleInput}
               className='border-gray-300 text-center focus:border-blue-500 block h-10 w-24 border p-3 shadow-sm focus:outline-0 focus:ring-0 disabled:opacity-50'
               placeholder='-'
               min={!minimum ? 0 : minimum}
@@ -74,7 +69,7 @@ const LikertScale: React.FC<{id: string}> = ({ id }) => {
         )}
       </div>
       <Config id={id} options={configOptions} open={open} setOpen={setOpen} />
-    </div>
+    </>
   );
 };
 

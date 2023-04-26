@@ -1,8 +1,6 @@
 import { useEffect, useRef } from 'react';
-import { Section } from './configs/Section';
-import { Checkbox } from './configs/Checkbox';
-import { Paragraph } from './configs/Paragraph';
-import { Count } from './configs/Count';
+import { Checkbox } from './elements/Checkbox';
+import { Input } from './elements/Input';
 
 type Prop = {
   id: string;
@@ -30,25 +28,41 @@ const Config: React.FC<Prop> = ({ id, options, open, setOpen }) => {
   return open ? (
     <div ref={ref} className='grid gap-3 grid-cols-4 border p-3 shadow-md mt-2'>
       {options.map((attr, idx) => {
-        const name = attr.toLowerCase()
+        const name = attr.toLowerCase();
 
         switch (name) {
           case 'label':
           case 'placeholder':
-            return <Section key={idx} fieldId={id} name={name} />;
+            return (
+              <div key={idx} className='col-span-2'>
+                <Input fieldId={id} name={name} />
+              </div>
+            );
           case 'info':
           case 'title':
           case 'question':
-            return <Paragraph key={idx} fieldId={id} name={name} />;
+            return (
+              <div key={idx} className='col-span-4'>
+                <Input fieldId={id} name={name} />
+              </div>
+            );
+          case 'minimum':
+          case 'maximum':
+            return (
+              <div key={idx} className='col-span-1'>
+                <Input fieldId={id} name={name} />
+              </div>
+            );
           case 'underline':
           case 'required':
           case 'align left':
           case 'align right':
           case 'align center':
-            return <Checkbox key={idx} fieldId={id} name={name} />;
-          case 'minimum':
-          case 'maximum':
-            return <Count  key={idx} fieldId={id} name={name} />
+            return (
+              <div key={idx} className='col-span-1'>
+                <Checkbox fieldId={id} name={name} />
+              </div>
+            );
           default:
             break;
         }
